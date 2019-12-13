@@ -41,6 +41,22 @@ class Task extends Model
 
     public static function paginate($page, $pageSize, $sortBy, $direction)
     {
+        $data = [
+            'page' => $page,
+            'page_size' => $pageSize,
+            'total' => 0,
+            'items' => [],
+            'sort' => $sortBy.':'.$direction
+        ];
 
+        $offset = $pageSize * ($page - 1);
+        $db = new DB();
+        $direction = $direction == 'asc' ? 'ASC' : 'DESC';
+        $sort = "tasks.$sortBy $direction"; // may be a weak point
+        $items = $db->query('SELECT * FROM tasks ORDER BY '.$sort.' LIMIT ? OFFSET ?', $pageSize, $offset)->fetchAll();
+        $data['items'] = $items;
+        $data['total'] = $db->query('SELECT * FROM tasks')->numRows();
+
+        return $data;
     }
 }

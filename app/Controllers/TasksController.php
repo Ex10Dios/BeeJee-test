@@ -4,12 +4,33 @@ class TasksController extends Controller
 {
     const PAGE_SIZE = 3;
 
+    const SORT_COLUMNS = [
+        'username',
+        'email',
+        'done'
+    ];
+
     public function getIndex()
     {
         $db = new DB();
-        // $order = $_REQUEST['order'];
-        // $page = $_REQUEST['page'];
-        $tasks = $db->query('SELECT * FROM tasks')->fetchAll();
+        $sort = isset($_REQUEST['sort']) ? $_REQUEST['sort'] : 'username:asc';
+        $sort = explode(':', $sort);
+        if (
+            count($sort) >= 2 &&
+            in_array($sort[0], self::SORT_COLUMNS) &&
+            in_array($sort[1], ['asc', 'desc'])
+        ) {
+            $sortBy = $sort[0];
+            $direction = $sort[1];
+        } else {
+            $sortBy = 'username';
+            $direction = 'asc';
+        }
+        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+        $page = intval($page) > 0 ? intval($page) : 1;
+        $page = intval($page) > 0 ? intval($page) : 1;
+
+        $data = Task::paginate($page, self::PAGE_SIZE, $sortBy, $direction);
 
         include APP_PATH."views/tasks.html.php";
     }
@@ -43,6 +64,10 @@ class TasksController extends Controller
 
     public function getEdit()
     {
+        if (!Auth::check()) {
+            include APP_PATH."views/errors/401.html.php";
+            die();
+        }
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 
         if ($task = Task::find($id)) {
@@ -55,26 +80,39 @@ class TasksController extends Controller
 
     public function update()
     {
-        $task = [
-            'id' => isset($_REQUEST['id']) ? $_REQUEST['id'] : '',
-            'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : '',
-            'email' => isset($_REQUEST['email']) ? $_REQUEST['email'] : '',
-            'text' => isset($_REQUEST['text']) ? $_REQUEST['text'] : '',
-            'done' => isset($_REQUEST['done']) ? $_REQUEST['done'] : 0,
-            'edited' => 1,
-        ];
-        $this->validate($task);
-        Task::updateTask(
-            $task['id'],
-            $task['username'],
-            $task['email'],
-            $task['text'],
-            $task['done'],
-            $task['edited']
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        if ($oldTask = Task::find($id)) {
+
+            $task = [
+                'id' => $id,
+                'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : '',
+                'email' => isset($_REQUEST['email']) ? $_REQUEST['email'] : '',
+                'text' => isset($_REQUEST['text']) ? $_REQUEST['text'] : '',
+                'done' => isset($_REQUEST['done']) ? $_REQUEST['done'] : 0,
+            ];
+
+            $task['edited'] = ($oldTask['edited'] || $oldTask['text'] != $task['text']) ? 1 : 0;
+
+            if (!Auth::check()) {
+                Session::put('error', 'You are not authorized');
+                include APP_PATH."views/form.html.php";
+                die();
+            }
+            $this->validate($task);
+            Task::updateTask(
+                $task['id'],
+                $task['username'],
+                $task['email'],
+                $task['text'],
+                $task['done'],
+                $task['edited']
             );
 
-        Session::put('message', 'Successfully updated');
-        _redirect('/');
+            Session::put('message', 'Successfully updated');
+            _redirect('/');
+        } else {
+            include APP_PATH."views/errors/404.html.php";
+        }
     }
 
     public function validate(array $task)
