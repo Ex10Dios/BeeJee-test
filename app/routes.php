@@ -1,28 +1,28 @@
 <?php
 
-Route::get('/', function () {
-    (new TasksController())->getIndex();
+Route::get('/', function ($request) {
+    (new TasksController())->getIndex($request);
 });
-Route::get('/login', function () {
-    (new AuthController())->getLogin();
+Route::get('/login', function ($request) {
+    (new AuthController())->getLogin($request);
 });
-Route::post('/login', function () {
-    (new AuthController())->auth();
+Route::post('/login', function ($request) {
+    (new AuthController())->auth($request);
 });
-Route::post('/logout', function () {
-    (new AuthController())->logout();
+Route::post('/logout', function ($request) {
+    (new AuthController())->logout($request);
 });
-Route::get('/add', function () {
-    (new TasksController())->getAdd();
+Route::get('/add', function ($request) {
+    (new TasksController())->getAdd($request);
 });
-Route::post('/add', function () {
-    (new TasksController())->store();
+Route::post('/add', function ($request) {
+    (new TasksController())->store($request);
 });
-Route::get('/edit', function () {
-    (new TasksController())->getEdit();
+Route::get('/edit', function ($request) {
+    (new TasksController())->getEdit($request);
 });
-Route::post('/edit', function () {
-    (new TasksController())->update();
+Route::post('/edit', function ($request) {
+    (new TasksController())->update($request);
 });
 
 // Must be in the end of file

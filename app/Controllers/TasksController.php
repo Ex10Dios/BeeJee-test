@@ -10,9 +10,9 @@ class TasksController extends Controller
         'done'
     ];
 
-    public function getIndex()
+    public function getIndex(array $request)
     {
-        $sort = isset($_REQUEST['sort']) ? $_REQUEST['sort'] : 'username:asc';
+        $sort = isset($request['sort']) ? $request['sort'] : 'username:asc';
         $sort = explode(':', $sort);
         if (
             count($sort) >= 2 &&
@@ -25,7 +25,7 @@ class TasksController extends Controller
             $sortBy = 'username';
             $direction = 'asc';
         }
-        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+        $page = isset($request['page']) ? $request['page'] : 1;
         $page = intval($page) > 0 ? intval($page) : 1;
         $page = intval($page) > 0 ? intval($page) : 1;
 
@@ -34,7 +34,7 @@ class TasksController extends Controller
         include APP_PATH."views/tasks.html.php";
     }
 
-    public function getAdd()
+    public function getAdd(array $request)
     {
         $task = [
             'id' => '',
@@ -46,13 +46,13 @@ class TasksController extends Controller
         include APP_PATH."views/form.html.php";
     }
 
-    public function store()
+    public function store(array $request)
     {
         $task = [
             'id' => '',
-            'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : '',
-            'email' => isset($_REQUEST['email']) ? $_REQUEST['email'] : '',
-            'text' => isset($_REQUEST['text']) ? $_REQUEST['text'] : '',
+            'username' => isset($request['username']) ? $request['username'] : '',
+            'email' => isset($request['email']) ? $request['email'] : '',
+            'text' => isset($request['text']) ? $request['text'] : '',
             'done' => '',
         ];
         $this->validate($task);
@@ -61,13 +61,13 @@ class TasksController extends Controller
         _redirect('/');
     }
 
-    public function getEdit()
+    public function getEdit(array $request)
     {
         if (!Auth::check()) {
             include APP_PATH."views/errors/401.html.php";
             die();
         }
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        $id = isset($request['id']) ? $request['id'] : '';
 
         if ($task = Task::find($id)) {
             include APP_PATH."views/form.html.php";
@@ -77,17 +77,17 @@ class TasksController extends Controller
 
     }
 
-    public function update()
+    public function update(array $request)
     {
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        $id = isset($request['id']) ? $request['id'] : '';
         if ($oldTask = Task::find($id)) {
 
             $task = [
                 'id' => $id,
-                'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : '',
-                'email' => isset($_REQUEST['email']) ? $_REQUEST['email'] : '',
-                'text' => isset($_REQUEST['text']) ? $_REQUEST['text'] : '',
-                'done' => isset($_REQUEST['done']) ? $_REQUEST['done'] : 0,
+                'username' => isset($request['username']) ? $request['username'] : '',
+                'email' => isset($request['email']) ? $request['email'] : '',
+                'text' => isset($request['text']) ? $request['text'] : '',
+                'done' => isset($request['done']) ? $request['done'] : 0,
             ];
 
             $task['edited'] = ($oldTask['edited'] || $oldTask['text'] != $task['text']) ? 1 : 0;

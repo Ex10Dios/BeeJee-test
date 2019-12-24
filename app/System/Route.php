@@ -12,7 +12,7 @@ class Route
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
 
         if ($uri == $route && $_SERVER['REQUEST_METHOD'] == 'GET') {
-            $function->__invoke();
+            call_user_func($function, $_GET);
         }
     }
 
@@ -23,7 +23,7 @@ class Route
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
 
         if ($uri == $route && $_SERVER['REQUEST_METHOD'] == 'POST') {
-            $function->__invoke();
+            call_user_func($function, $_POST);
         }
     }
 

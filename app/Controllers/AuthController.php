@@ -2,14 +2,14 @@
 
 class AuthController extends Controller
 {
-    public function getLogin()
+    public function getLogin(array $request)
     {
         include APP_PATH.'views/login.html.php';
     }
 
-    public function auth()
+    public function auth(array $request)
     {
-        if (Auth::login($_REQUEST['username'], $_REQUEST['password'])) {
+        if (Auth::login($request['username'], $request['password'])) {
             Session::put('message', 'Successfully logged in');
             _redirect('/');
         } else {
@@ -19,7 +19,7 @@ class AuthController extends Controller
 
     }
 
-    public function logout()
+    public function logout(array $request)
     {
         Auth::logout();
         Session::put('message', 'Successfully logged out');
