@@ -56,6 +56,7 @@ class Task extends Model
         $items = $db->query('SELECT * FROM tasks ORDER BY '.$sort.' LIMIT ? OFFSET ?', $pageSize, $offset)->fetchAll();
         $data['items'] = $items;
         $data['total'] = $db->query('SELECT * FROM tasks')->numRows();
+        $db->close();
 
         return $data;
     }

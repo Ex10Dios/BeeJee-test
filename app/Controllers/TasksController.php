@@ -12,7 +12,6 @@ class TasksController extends Controller
 
     public function getIndex()
     {
-        $db = new DB();
         $sort = isset($_REQUEST['sort']) ? $_REQUEST['sort'] : 'username:asc';
         $sort = explode(':', $sort);
         if (
