@@ -7,7 +7,7 @@ class Utils
         if ($error = Session::get('error', true)) {
             echo
                 '<div class="alert alert-danger" role="alert">'.
-                _text($error).
+                _h($error).
                 '</div>';
         }
     }
@@ -17,7 +17,7 @@ class Utils
         if ($message = Session::get('message', true)) {
             echo
                 '<div class="alert alert-success" role="alert">'.
-                _text($message).
+                _h($message).
                 '</div>';
         }
     }
