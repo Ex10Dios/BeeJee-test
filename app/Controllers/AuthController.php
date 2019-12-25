@@ -1,6 +1,10 @@
 <?php
+namespace App\Controllers;
 
-class AuthController extends Controller
+use Auth;
+use Session;
+
+class AuthController
 {
     public function getLogin(array $request)
     {

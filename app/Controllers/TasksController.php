@@ -1,6 +1,11 @@
 <?php
+namespace App\Controllers;
 
-class TasksController extends Controller
+use App\Models\Task;
+use Auth;
+use Session;
+
+class TasksController
 {
     const PAGE_SIZE = 3;
 

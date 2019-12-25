@@ -1,4 +1,6 @@
 <?php
+use App\Controllers\TasksController;
+use App\Controllers\AuthController;
 
 Route::get('/', function ($request) {
     (new TasksController())->getIndex($request);

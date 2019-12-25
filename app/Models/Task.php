@@ -1,6 +1,9 @@
 <?php
+namespace App\Models;
 
-class Task extends Model
+use DB;
+
+class Task
 {
     public static function find($id)
     {
